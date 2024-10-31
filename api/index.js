@@ -40,34 +40,11 @@ app.get("/", (req, res) => {
   });
 });
 
-// Endpoint to get all collection names and their total records
-app.get("/api/collections", async (req, res) => {
-  try {
-    const client = await connectDB(); // Get the client instance
-    const db = client.db(); // Get the database instance
-
-    const collections = await db.listCollections().toArray(); // Fetch all collections
-    const collectionData = await Promise.all(
-      collections.map(async (collection) => {
-        const count = await db.collection(collection.name).countDocuments();
-        return {
-          name: collection.name,
-          totalRecords: count,
-        };
-      })
-    );
-
-    res.status(200).json({ collections: collectionData }); // Send the collection data
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving collections", error: error.message });
-  }
-});
-
 // Endpoint to get all documents from all collections
 app.get('/api/database-details', async (req, res) => {
   try {
-    const client = await connectDB(); // Get the client instance
-    const db = client.db(); // Get the database instance
+    const connection = await connectDB(); // Get the connection instance
+    const db = connection.db; // Get the database instance from the connection
 
     const collections = await db.collections(); // Fetch all collections
     const dbDetails = {};

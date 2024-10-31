@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const adminRoutes = require("./routes/adminRoutes");
 const appInfoRoutes = require("./routes/appInfoRoutes");
@@ -40,22 +40,43 @@ app.get("/", (req, res) => {
   });
 });
 
+// Endpoint to get all collection names and their total records
+app.get("/api/collections", async (req, res) => {
+  try {
+    const collections = await mongoose.connection.db.listCollections().toArray(); // Fetch all collections
+    const collectionData = await Promise.all(
+      collections.map(async (collection) => {
+        const count = await mongoose.connection.db.collection(collection.name).countDocuments();
+        return {
+          name: collection.name,
+          totalRecords: count,
+        };
+      })
+    );
+
+    res.status(200).json({ collections: collectionData }); // Send the collection data
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving collections", error: error.message });
+  }
+});
+
+// Endpoint to get all documents from all collections
 app.get('/api/database-details', async (req, res) => {
-    try {
-        const collections = await mongoose.connection.db.collections(); // Fetch all collections
-        const dbDetails = {};
+  try {
+    const collections = await mongoose.connection.db.collections(); // Fetch all collections
+    const dbDetails = {};
 
-        // Iterate over each collection and fetch all documents
-        for (const collection of collections) {
-            const collectionName = collection.collectionName;
-            const documents = await collection.find({}).toArray(); // Convert documents to array format
-            dbDetails[collectionName] = documents; // Store in dbDetails with collection name as key
-        }
-
-        res.json(dbDetails); // Send complete database details as JSON
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving database details', error: error.message });
+    // Iterate over each collection and fetch all documents
+    for (const collection of collections) {
+      const collectionName = collection.collectionName;
+      const documents = await collection.find({}).toArray(); // Convert documents to array format
+      dbDetails[collectionName] = documents; // Store in dbDetails with collection name as key
     }
+
+    res.json(dbDetails); // Send complete database details as JSON
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving database details', error: error.message });
+  }
 });
 
 // Routes
@@ -74,7 +95,9 @@ app.use("/api/errorlogs", errorLogRoutes);
 // Error logging middleware
 app.use((err, req, res, next) => {
   const errorLog = new ErrorLog({ message: err.message, stack: err.stack });
-  errorLog.save().then(() => console.log("Error logged")).catch(logErr => console.error("Failed to log error:", logErr)); // Handle error when saving the log
+  errorLog.save()
+    .then(() => console.log("Error logged"))
+    .catch(logErr => console.error("Failed to log error:", logErr)); // Handle error when saving the log
   res.status(500).json({ message: "An error occurred, it has been logged." });
 });
 

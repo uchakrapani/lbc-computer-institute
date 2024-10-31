@@ -40,13 +40,9 @@ app.get("/", (req, res) => {
   });
 });
 
-// Endpoint to get all documents from all collections
-app.get('/api/database-details', async (req, res) => {
+app.get("/api/database-details", async (req, res) => {
   try {
-    const connection = await connectDB(); // Get the connection instance
-    const db = connection.db; // Get the database instance from the connection
-
-    const collections = await db.collections(); // Fetch all collections
+    const collections = await mongoose.connection.db.collections(); // Fetch all collections
     const dbDetails = {};
 
     // Iterate over each collection and fetch all documents
@@ -58,9 +54,40 @@ app.get('/api/database-details', async (req, res) => {
 
     res.json(dbDetails); // Send complete database details as JSON
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving database details', error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error retrieving database details",
+        error: error.message,
+      });
   }
 });
+
+app.get("/api/collection-counts", async (req, res) => {
+  try {
+    const collections = await mongoose.connection.db.collections(); // Fetch all collections
+    const dbDetails = {};
+    const totalCollections = collections.length; // Count of total collections
+
+    // Iterate over each collection and get the name and document count
+    for (const collection of collections) {
+      const collectionName = collection.collectionName;
+      const documentCount = await collection.countDocuments(); // Get count of documents in the collection
+      dbDetails[collectionName] = documentCount; // Store document count with collection name as key
+    }
+
+    res.json({
+      totalCollections: totalCollections, // Total number of collections
+      collections: dbDetails, // Document counts for each collection
+    }); // Send response with total collections and details
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving database details",
+      error: error.message,
+    });
+  }
+});
+
 
 // Routes
 app.use("/api/admin", adminRoutes);
@@ -78,9 +105,10 @@ app.use("/api/errorlogs", errorLogRoutes);
 // Error logging middleware
 app.use((err, req, res, next) => {
   const errorLog = new ErrorLog({ message: err.message, stack: err.stack });
-  errorLog.save()
+  errorLog
+    .save()
     .then(() => console.log("Error logged"))
-    .catch(logErr => console.error("Failed to log error:", logErr)); // Handle error when saving the log
+    .catch((logErr) => console.error("Failed to log error:", logErr)); // Handle error when saving the log
   res.status(500).json({ message: "An error occurred, it has been logged." });
 });
 

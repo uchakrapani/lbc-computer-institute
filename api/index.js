@@ -43,15 +43,13 @@ app.get("/", (req, res) => {
 // Endpoint to get all collection names and their total records
 app.get("/api/collections", async (req, res) => {
   try {
-    // Ensure the connection is established
-    if (!mongoose.connection.readyState) {
-      return res.status(500).json({ message: "Database not connected" });
-    }
+    const client = await connectDB(); // Get the client instance
+    const db = client.db(); // Get the database instance
 
-    const collections = await mongoose.connection.db.listCollections().toArray(); // Fetch all collections
+    const collections = await db.listCollections().toArray(); // Fetch all collections
     const collectionData = await Promise.all(
       collections.map(async (collection) => {
-        const count = await mongoose.connection.db.collection(collection.name).countDocuments();
+        const count = await db.collection(collection.name).countDocuments();
         return {
           name: collection.name,
           totalRecords: count,
@@ -68,11 +66,10 @@ app.get("/api/collections", async (req, res) => {
 // Endpoint to get all documents from all collections
 app.get('/api/database-details', async (req, res) => {
   try {
-    if (!mongoose.connection.readyState) {
-      return res.status(500).json({ message: "Database not connected" });
-    }
-    
-    const collections = await mongoose.connection.db.collections(); // Fetch all collections
+    const client = await connectDB(); // Get the client instance
+    const db = client.db(); // Get the database instance
+
+    const collections = await db.collections(); // Fetch all collections
     const dbDetails = {};
 
     // Iterate over each collection and fetch all documents

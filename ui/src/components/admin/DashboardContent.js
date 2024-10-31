@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope, faBanner, faClipboardList, faChartLine, faTools } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faBanner } from '@fortawesome/free-regular-svg-icons'; // Importing from regular icons
+import { faClipboardList, faChartLine } from '@fortawesome/free-solid-svg-icons';
 
 const iconMap = {
     appinfos: faCogs,
@@ -13,7 +15,7 @@ const iconMap = {
     branches: faChartLine,
     admins: faUsers,
     contactus: faEnvelope,
-    banners: faBanner,
+    banners: faBanner, // Updated to use the correct import
 };
 
 const DashboardContent = () => {
@@ -51,7 +53,7 @@ const DashboardContent = () => {
 
     return (
         <div style={styles.dashboardContent}>
-            <h2>Welcome Admin</h2>
+            <h2>Dashboard Overview</h2>
             <p>Your main content goes here. Add charts, tables, or statistics.</p>
 
             <h3>Total Collections: {collectionData.totalCollections}</h3>

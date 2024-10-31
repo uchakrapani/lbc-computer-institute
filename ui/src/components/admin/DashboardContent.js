@@ -1,4 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope, faBanner, faClipboardList, faChartLine, faTools } from '@fortawesome/free-solid-svg-icons';
+
+const iconMap = {
+    appinfos: faCogs,
+    courseoffers: faBook,
+    courses: faClipboardList,
+    complaints: faExclamationTriangle,
+    studentpayments: faCreditCard,
+    students: faUsers,
+    errorlogs: faFileAlt,
+    branches: faChartLine,
+    admins: faUsers,
+    contactus: faEnvelope,
+    banners: faBanner,
+};
 
 const DashboardContent = () => {
     const [collectionData, setCollectionData] = useState(null);
@@ -35,7 +51,7 @@ const DashboardContent = () => {
 
     return (
         <div style={styles.dashboardContent}>
-            <h2>Dashboard Overview</h2>
+            <h2>Welcome Admin</h2>
             <p>Your main content goes here. Add charts, tables, or statistics.</p>
 
             <h3>Total Collections: {collectionData.totalCollections}</h3>
@@ -43,10 +59,7 @@ const DashboardContent = () => {
                 {Object.entries(collectionData.collections).map(([collectionName, count]) => (
                     <div key={collectionName} style={styles.collectionBox}>
                         <div style={styles.iconContainer}>
-                            <img
-                                src={`https://via.placeholder.com/40?text=${collectionName.charAt(0).toUpperCase()}`}
-                                alt={`${collectionName} icon`}
-                            />
+                            <FontAwesomeIcon icon={iconMap[collectionName]} size="2x" />
                         </div>
                         <div>
                             <h4>{collectionName}</h4>

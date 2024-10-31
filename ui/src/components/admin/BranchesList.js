@@ -46,7 +46,7 @@ const BranchesList = () => {
     const confirmDelete = async () => {
         if (deleteId) {
             try {
-                await axios.delete(`http://localhost:9090/api/branches/${deleteId}`);
+                await axios.delete(`${API_URLS.BRANCHES}/${deleteId}`);
                 setBranches(branches.filter(branch => branch._id !== deleteId));
                 setFilteredBranches(filteredBranches.filter(branch => branch._id !== deleteId));
                 setSuccessMessage('Branch deleted successfully.');

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { API_URLS } from '../../constants/apiConstants';
 
 const ProfileInfo = () => {
     const [profile, setProfile] = useState(null);
@@ -14,7 +15,7 @@ const ProfileInfo = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await axios.get(`http://localhost:9090/api/admin/${userId}`);
+                const response = await axios.get(`${API_URLS.ADMIN_LIST}/${userId}`);
                 setProfile(response.data);
             } catch (err) {
                 setError('Failed to fetch profile data');

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faBanner } from '@fortawesome/free-regular-svg-icons'; // Importing from regular icons
-import { faClipboardList, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope, faBullhorn } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
 
 const iconMap = {
     appinfos: faCogs,
@@ -12,10 +11,10 @@ const iconMap = {
     studentpayments: faCreditCard,
     students: faUsers,
     errorlogs: faFileAlt,
-    branches: faChartLine,
+    branches: faClipboardList, // You can change this as needed
     admins: faUsers,
     contactus: faEnvelope,
-    banners: faBanner, // Updated to use the correct import
+    banners: faBullhorn, // Using faBullhorn as a substitute for faBanner
 };
 
 const DashboardContent = () => {

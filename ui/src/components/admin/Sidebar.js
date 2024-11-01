@@ -2,13 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faMoneyBill,
-  faTachometerAlt,
-  faUsers,
-  faInfoCircle,
-  faBuilding,
-  faDatabase,
-} from "@fortawesome/free-solid-svg-icons"; // Added faDatabase
+  faChartPie,       // Dashboard icon
+  faUsers,          // Users icon
+  faInfoCircle,     // Info icon
+  faBuilding,       // Building icon for branches
+  faImage,          // Image icon for banners
+  faDatabase,       // Database icon for backup
+} from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = ({ toggleSidebar }) => {
   return (
@@ -33,124 +33,50 @@ const Sidebar = ({ toggleSidebar }) => {
             gap: "8px",
           }}
         >
-          <FontAwesomeIcon
-            icon={faMoneyBill}
-            size="lg"
-            style={{ color: "#4B5563" }}
-          />
+          <FontAwesomeIcon icon={faChartPie} size="lg" style={{ color: "#4B5563" }} />
           LastBenchCoder
         </h2>
-        <p style={{ fontSize: "14px", color: "#6B7280" }}>
-          Your Education partner
-        </p>
+        <p style={{ fontSize: "14px", color: "#6B7280" }}>Your Education Partner</p>
       </div>
+
       {/* Navigation Links */}
       <nav>
         <ul style={{ listStyleType: "none", padding: "0" }}>
           <li>
-            <Link
-              to="/admin/dashboard"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faTachometerAlt}
-                style={{ marginRight: "8px" }}
-              />
+            <Link to="/admin/dashboard" style={linkStyle}>
+              <FontAwesomeIcon icon={faChartPie} style={{ marginRight: "8px" }} />
               Dashboard
             </Link>
           </li>
           <hr />
           <li>
-            <Link
-              to="/admin/admin-list"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
+            <Link to="/admin/admin-list" style={linkStyle}>
               <FontAwesomeIcon icon={faUsers} style={{ marginRight: "8px" }} />
               Administrators
             </Link>
           </li>
           <li>
-            <Link
-              to="/admin/appinfo"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faInfoCircle}
-                style={{ marginRight: "8px" }}
-              />
+            <Link to="/admin/appinfo" style={linkStyle}>
+              <FontAwesomeIcon icon={faInfoCircle} style={{ marginRight: "8px" }} />
               App Info
             </Link>
           </li>
           <li>
-            <Link
-              to="/admin/branches-list"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faBuilding}
-                style={{ marginRight: "8px" }}
-              />
+            <Link to="/admin/branches-list" style={linkStyle}>
+              <FontAwesomeIcon icon={faBuilding} style={{ marginRight: "8px" }} />
               Branches
             </Link>
           </li>
           <li>
-            <Link
-              to="/admin/banners-list"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faBuilding}
-                style={{ marginRight: "8px" }}
-              />
+            <Link to="/admin/banners-list" style={linkStyle}>
+              <FontAwesomeIcon icon={faImage} style={{ marginRight: "8px" }} />
               Banners
             </Link>
           </li>
           <hr />
           <li>
-            <Link
-              to="/admin/backup-db"
-              style={{
-                textDecoration: "none",
-                color: "#4B5563",
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 16px",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faDatabase}
-                style={{ marginRight: "8px" }}
-              />
+            <Link to="/admin/backup-db" style={linkStyle}>
+              <FontAwesomeIcon icon={faDatabase} style={{ marginRight: "8px" }} />
               Database Backup
             </Link>
           </li>
@@ -158,6 +84,14 @@ const Sidebar = ({ toggleSidebar }) => {
       </nav>
     </aside>
   );
+};
+
+const linkStyle = {
+  textDecoration: "none",
+  color: "#4B5563",
+  display: "flex",
+  alignItems: "center",
+  padding: "8px 16px",
 };
 
 export default Sidebar;

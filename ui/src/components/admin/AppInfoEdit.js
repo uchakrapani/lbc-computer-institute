@@ -1,46 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useParams for getting the ID from URL
-
+import { useNavigate, useParams } from 'react-router-dom';
 import { API_URLS } from '../../constants/apiConstants';
 
 const AppInfoEdit = () => {
-    const { id } = useParams(); // Get the app info ID from the URL parameters
+    const { id } = useParams();
     const [appInfo, setAppInfo] = useState({
         app_name: '',
-        logo: '',
+        logo_url: '', // Adjusted for the API response
         description: '',
-        favicon: '',
+        favicon_url: '', // Adjusted for the API response
         social_network: [
             { platform: '', url: '' },
-            { platform: '', url: '' },
-            { platform: '', url: '' },
         ],
-        status: 'active', // Default status
+        status: 'active',
         admin_id: '',
     });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [logoPreview, setLogoPreview] = useState('');
+    const [faviconPreview, setFaviconPreview] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAppInfo = async () => {
             try {
-                const response = await axios.get(`${API_URLS.APP_INFO_LIST}/${id}`); // Fetch existing app info by ID
-                setAppInfo(response.data);
+                const response = await axios.get(`${API_URLS.APP_INFO_LIST}/${id}`);
+                const data = response.data;
+
+                // Parse the social_network string into an array
+                const socialNetworks = JSON.parse(data.social_network[0]);
+
+                // Set the app info with parsed social networks
+                setAppInfo({
+                    ...data,
+                    social_network: socialNetworks,
+                });
+
+                // Set previews for logo and favicon
+                setLogoPreview(data.logo_url);
+                setFaviconPreview(data.favicon_url);
             } catch (err) {
                 setError('Failed to fetch AppInfo');
             }
         };
 
         fetchAppInfo();
-        
-        // Set admin_id from session storage
+
         const user = JSON.parse(sessionStorage.getItem('user'));
         if (user) {
             setAppInfo((prev) => ({ ...prev, admin_id: user._id }));
         }
-    }, [id]); // Fetch data only when the ID changes
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,14 +66,41 @@ const AppInfoEdit = () => {
         }
     };
 
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        const file = files[0];
+
+        if (name === 'logo_url') {
+            setAppInfo({ ...appInfo, logo_url: file });
+            setLogoPreview(URL.createObjectURL(file));
+        } else if (name === 'favicon_url') {
+            setAppInfo({ ...appInfo, favicon_url: file });
+            setFaviconPreview(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+
+        for (const key in appInfo) {
+            if (Array.isArray(appInfo[key])) {
+                formData.append(key, JSON.stringify(appInfo[key]));
+            } else {
+                formData.append(key, appInfo[key]);
+            }
+        }
+
         try {
-            await axios.put(`{APP_INFO_LIST}/${id}`, appInfo); // Send PUT request to update app info
+            await axios.put(`${API_URLS.APP_INFO_LIST}/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             setMessage('AppInfo updated successfully!');
             setError('');
             setTimeout(() => {
-                navigate('/admin/appinfo'); // Redirect to app info list after successful update
+                navigate('/admin/appinfo');
             }, 2000);
         } catch (error) {
             setError(error.response ? error.response.data.message : 'Error updating AppInfo');
@@ -92,17 +130,6 @@ const AppInfoEdit = () => {
                             required
                         />
                     </div>
-                    <div className="col">
-                        <label className="form-label">Logo URL</label>
-                        <input
-                            type="url"
-                            name="logo"
-                            className="form-control"
-                            value={appInfo.logo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
                 </div>
 
                 <div className="mb-3">
@@ -116,28 +143,46 @@ const AppInfoEdit = () => {
                     />
                 </div>
 
-                <div className="row mb-3">
-                    <div className="col">
-                        <label className="form-label">Favicon URL</label>
-                        <input
-                            type="url"
-                            name="favicon"
-                            className="form-control"
-                            value={appInfo.favicon}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="col">
-                        <label className="form-label">Admin ID</label>
-                        <input
-                            type="text"
-                            name="admin_id"
-                            className="form-control"
-                            value={appInfo.admin_id} // Admin ID set from session storage
-                            readOnly // Make it read-only
-                        />
-                    </div>
+                {/* Logo Upload */}
+                <div className="mb-3">
+                    <label className="form-label">Logo</label>
+                    <input
+                        type="file"
+                        name="logo_url"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={handleFileChange}
+                    />
+                    {logoPreview && (
+                        <div className="mt-3">
+                            <img
+                                src={logoPreview}
+                                alt="Logo Preview"
+                                style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* Favicon Upload */}
+                <div className="mb-3">
+                    <label className="form-label">Favicon</label>
+                    <input
+                        type="file"
+                        name="favicon_url"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={handleFileChange}
+                    />
+                    {faviconPreview && (
+                        <div className="mt-3">
+                            <img
+                                src={faviconPreview}
+                                alt="Favicon Preview"
+                                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <div className="mb-3">

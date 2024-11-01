@@ -6,12 +6,9 @@ const connectDB = async () => {
 
     while (retries < maxRetries) {
         try {
-            await mongoose.connect(process.env.MONGO_URI, { 
-                useNewUrlParser: true, 
-                useUnifiedTopology: true 
-            });
+            await mongoose.connect(process.env.MONGO_URI); // Remove deprecated options
             console.log('Connected to MongoDB Successfully');
-            break; // Exit the loop on successful connection
+            break; // Exit loop on success
         } catch (error) {
             retries++;
             console.error(`MongoDB connection error (attempt ${retries}):`, error);

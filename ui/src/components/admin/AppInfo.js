@@ -100,11 +100,11 @@ const AppInfoList = () => {
                                 <td>{index + 1}</td>
                                 <td>{app.app_name}</td>
                                 <td>
-                                    <img src={app.logo} alt="App Logo" style={{ width: '50px', height: '50px' }} />
+                                    <img src={app.logo_url} alt="App Logo" style={{ width: '50px', height: '50px' }} />
                                 </td>
                                 <td>{app.description}</td>
                                 <td>
-                                    <img src={app.favicon} alt="Favicon" style={{ width: '20px', height: '20px' }} />
+                                    <img src={app.favicon_url} alt="Favicon" style={{ width: '20px', height: '20px' }} />
                                 </td>
                                 <td>
                                     <span className={`badge ${app.status === 'active' ? 'bg-success' : 'bg-danger'}`}>

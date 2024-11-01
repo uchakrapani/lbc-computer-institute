@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate instead
+import { useNavigate } from "react-router-dom"; 
 import { API_URLS } from "../../constants/apiConstants";
 
 const AppInfoCreate = () => {
   const [appInfo, setAppInfo] = useState({
     app_name: "",
-    logo: "",
     description: "",
-    favicon: "",
+    logo_url: null, // For storing the selected logo file
+    favicon_url: null, // For storing the selected favicon file
     social_network: [
-      { facebook: "", url: "" },
-      { whatsapp: "", url: "" },
-      { twitter: "", url: "" },
-      { instagram: "", url: "" },
-      { youtube: "", url: "" },
+      { platform: "", url: "" },
+      { platform: "", url: "" },
+      { platform: "", url: "" },
+      { platform: "", url: "" },
+      { platform: "", url: "" },
     ],
     status: "active", // Default status
     admin_id: "", // Admin ID will be set from session storage
   });
+  
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Use useNavigate instead
+  const [logoPreview, setLogoPreview] = useState(""); // For logo preview
+  const [faviconPreview, setFaviconPreview] = useState(""); // For favicon preview
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -32,6 +35,7 @@ const AppInfoCreate = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name.startsWith("social_network")) {
       const index = parseInt(name.split("[")[1].split("]")[0]);
       const field = name.split(".")[1];
@@ -43,14 +47,38 @@ const AppInfoCreate = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files[0];
+
+    if (name === "logo_url") {
+      setAppInfo({ ...appInfo, logo_url: file });
+      setLogoPreview(URL.createObjectURL(file)); // Create a preview URL
+    } else if (name === "favicon_url") {
+      setAppInfo({ ...appInfo, favicon_url: file });
+      setFaviconPreview(URL.createObjectURL(file)); // Create a preview URL
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    // Append all app info data to formData
+    for (const key in appInfo) {
+      formData.append(key, appInfo[key]);
+    }
+
     try {
-      const response = await axios.post(`${API_URLS.APP_INFO_LIST}`, appInfo);
+      await axios.post(`${API_URLS.APP_INFO_LIST}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setMessage("AppInfo created successfully!");
       setError("");
       setTimeout(() => {
-        navigate("/admin/appinfo"); // Use navigate for redirection
+        navigate("/admin/appinfo");
       }, 2000);
     } catch (error) {
       setError(
@@ -63,10 +91,8 @@ const AppInfoCreate = () => {
   return (
     <div className="container mt-5">
       <h2>Create AppInfo</h2>
-      <p className="text-muted">
-        Fill in the details to create a new AppInfo record.
-      </p>
-      <hr /> {/* Divider */}
+      <p className="text-muted">Fill in the details to create a new AppInfo record.</p>
+      <hr />
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
@@ -78,17 +104,6 @@ const AppInfoCreate = () => {
               name="app_name"
               className="form-control"
               value={appInfo.app_name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col">
-            <label className="form-label">Logo URL</label>
-            <input
-              type="url"
-              name="logo"
-              className="form-control"
-              value={appInfo.logo}
               onChange={handleChange}
               required
             />
@@ -106,28 +121,46 @@ const AppInfoCreate = () => {
           />
         </div>
 
-        <div className="row mb-3">
-          <div className="col">
-            <label className="form-label">Favicon URL</label>
-            <input
-              type="url"
-              name="favicon"
-              className="form-control"
-              value={appInfo.favicon}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col">
-            <label className="form-label">Admin ID</label>
-            <input
-              type="text"
-              name="admin_id"
-              className="form-control"
-              value={appInfo.admin_id} // Admin ID set from session storage
-              readOnly // Make it read-only
-            />
-          </div>
+        {/* Logo Upload */}
+        <div className="mb-3">
+          <label className="form-label">Logo</label>
+          <input
+            type="file"
+            name="logo_url"
+            accept="image/*"
+            className="form-control"
+            onChange={handleFileChange}
+          />
+          {logoPreview && (
+            <div className="mt-3">
+              <img
+                src={logoPreview}
+                alt="Logo Preview"
+                style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Favicon Upload */}
+        <div className="mb-3">
+          <label className="form-label">Favicon</label>
+          <input
+            type="file"
+            name="favicon_url"
+            accept="image/*"
+            className="form-control"
+            onChange={handleFileChange}
+          />
+          {faviconPreview && (
+            <div className="mt-3">
+              <img
+                src={faviconPreview}
+                alt="Favicon Preview"
+                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+              />
+            </div>
+          )}
         </div>
 
         <h5>Social Networks</h5>

@@ -7,23 +7,18 @@ const AppInfoCreate = () => {
   const [appInfo, setAppInfo] = useState({
     app_name: "",
     description: "",
-    logo_url: null, // For storing the selected logo file
-    favicon_url: null, // For storing the selected favicon file
-    social_network: [
-      { platform: "", url: "" },
-      { platform: "", url: "" },
-      { platform: "", url: "" },
-      { platform: "", url: "" },
-      { platform: "", url: "" },
-    ],
-    status: "active", // Default status
-    admin_id: "", // Admin ID will be set from session storage
+    logo_url: null,
+    favicon_url: null,
+    social_network: Array(5).fill({ platform: "", url: "" }), // Initialize with empty objects
+    status: "active",
+    admin_id: "",
   });
   
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [logoPreview, setLogoPreview] = useState(""); // For logo preview
-  const [faviconPreview, setFaviconPreview] = useState(""); // For favicon preview
+  const [logoPreview, setLogoPreview] = useState("");
+  const [faviconPreview, setFaviconPreview] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +30,6 @@ const AppInfoCreate = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.startsWith("social_network")) {
       const index = parseInt(name.split("[")[1].split("]")[0]);
       const field = name.split(".")[1];
@@ -50,27 +44,31 @@ const AppInfoCreate = () => {
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     const file = files[0];
-
     if (name === "logo_url") {
-      setAppInfo({ ...appInfo, logo_url: file });
-      setLogoPreview(URL.createObjectURL(file)); // Create a preview URL
+      if (file) {
+        setAppInfo({ ...appInfo, logo_url: file });
+        setLogoPreview(URL.createObjectURL(file));
+      } else {
+        setError("Please select a logo file.");
+      }
     } else if (name === "favicon_url") {
-      setAppInfo({ ...appInfo, favicon_url: file });
-      setFaviconPreview(URL.createObjectURL(file)); // Create a preview URL
+      if (file) {
+        setAppInfo({ ...appInfo, favicon_url: file });
+        setFaviconPreview(URL.createObjectURL(file));
+      } else {
+        setError("Please select a favicon file.");
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     const formData = new FormData();
-
-    // Log the appInfo to ensure app_name is filled
-    console.log('Submitting AppInfo:', appInfo);
-
-    // Append all app info data to formData
+    
     for (const key in appInfo) {
       if (Array.isArray(appInfo[key])) {
-        formData.append(key, JSON.stringify(appInfo[key])); // For social networks
+        formData.append(key, JSON.stringify(appInfo[key]));
       } else {
         formData.append(key, appInfo[key]);
       }
@@ -92,6 +90,8 @@ const AppInfoCreate = () => {
         error.response ? error.response.data.message : "Error creating AppInfo"
       );
       setMessage("");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -128,7 +128,6 @@ const AppInfoCreate = () => {
           />
         </div>
 
-        {/* Logo Upload */}
         <div className="mb-3">
           <label className="form-label">Logo</label>
           <input
@@ -149,7 +148,6 @@ const AppInfoCreate = () => {
           )}
         </div>
 
-        {/* Favicon Upload */}
         <div className="mb-3">
           <label className="form-label">Favicon</label>
           <input
@@ -201,8 +199,8 @@ const AppInfoCreate = () => {
         ))}
 
         <div className="col-12 d-flex justify-content-between mt-3">
-          <button type="submit" className="btn btn-primary btn-sm">
-            Create AppInfo
+          <button type="submit" className="btn btn-primary btn-sm" disabled={loading}>
+            {loading ? "Creating..." : "Create AppInfo"}
           </button>
           <a href="/admin/appinfo" className="btn btn-secondary btn-sm">
             Back to AppInfo List

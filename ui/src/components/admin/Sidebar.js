@@ -1,97 +1,52 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChartPie,       // Dashboard icon
-  faUsers,          // Users icon
-  faInfoCircle,     // Info icon
-  faBuilding,       // Building icon for branches
-  faImage,          // Image icon for banners
-  faDatabase,       // Database icon for backup
-} from "@fortawesome/free-solid-svg-icons";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTachometerAlt, faUsers, faInfoCircle, faBuilding, faImage, faBookOpen, faDatabase } from '@fortawesome/free-solid-svg-icons';
 
-const Sidebar = ({ toggleSidebar }) => {
-  return (
-    <aside
-      style={{
-        width: "250px",
-        backgroundColor: "#F8FAFC",
-        height: "100vh",
-        padding: "16px",
-        position: "relative",
-      }}
-    >
-      {/* Brand Info */}
-      <div style={{ marginBottom: "24px", textAlign: "center" }}>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
-          <FontAwesomeIcon icon={faChartPie} size="lg" style={{ color: "#4B5563" }} />
-          LastBenchCoder
-        </h2>
-        <p style={{ fontSize: "14px", color: "#6B7280" }}>Your Education Partner</p>
-      </div>
+const Sidebar = ({ isOpen }) => {
+    const menuItems = [
+        { to: "/admin/dashboard", icon: faTachometerAlt, label: "Dashboard" },
+        { to: "/admin/admin-list", icon: faUsers, label: "Administrators" },
+        { to: "/admin/appinfo", icon: faInfoCircle, label: "App Info" },
+        { to: "/admin/branches-list", icon: faBuilding, label: "Branches" },
+        { to: "/admin/banners-list", icon: faImage, label: "Banners" },
+        { to: "/admin/courses-list", icon: faBookOpen, label: "Courses" },
+        { to: "/admin/backup-db", icon: faDatabase, label: "Database Backup" },
+    ];
 
-      {/* Navigation Links */}
-      <nav>
-        <ul style={{ listStyleType: "none", padding: "0" }}>
-          <li>
-            <Link to="/admin/dashboard" style={linkStyle}>
-              <FontAwesomeIcon icon={faChartPie} style={{ marginRight: "8px" }} />
-              Dashboard
-            </Link>
-          </li>
-          <hr />
-          <li>
-            <Link to="/admin/admin-list" style={linkStyle}>
-              <FontAwesomeIcon icon={faUsers} style={{ marginRight: "8px" }} />
-              Administrators
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/appinfo" style={linkStyle}>
-              <FontAwesomeIcon icon={faInfoCircle} style={{ marginRight: "8px" }} />
-              App Info
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/branches-list" style={linkStyle}>
-              <FontAwesomeIcon icon={faBuilding} style={{ marginRight: "8px" }} />
-              Branches
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/banners-list" style={linkStyle}>
-              <FontAwesomeIcon icon={faImage} style={{ marginRight: "8px" }} />
-              Banners
-            </Link>
-          </li>
-          <hr />
-          <li>
-            <Link to="/admin/backup-db" style={linkStyle}>
-              <FontAwesomeIcon icon={faDatabase} style={{ marginRight: "8px" }} />
-              Database Backup
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-  );
-};
+    const sidebarStyle = {
+        display: isOpen ? 'block' : 'none',
+        width: '100%',
+        backgroundColor: '#343a40',
+        color: '#ffffff',
+        padding: '16px',
+        transition: 'max-height 0.3s ease',
+        maxHeight: isOpen ? '500px' : '0',
+        overflow: isOpen ? 'visible' : 'hidden'
+    };
 
-const linkStyle = {
-  textDecoration: "none",
-  color: "#4B5563",
-  display: "flex",
-  alignItems: "center",
-  padding: "8px 16px",
+    return (
+        <aside style={sidebarStyle}>
+            {menuItems.map((item) => (
+                <Link
+                    key={item.label}
+                    to={item.to}
+                    style={{
+                        color: '#ffffff',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '10px 15px',
+                        borderRadius: '4px',
+                        margin: '5px 0'
+                    }}
+                >
+                    <FontAwesomeIcon icon={item.icon} style={{ marginRight: '10px' }} />
+                    {item.label}
+                </Link>
+            ))}
+        </aside>
+    );
 };
 
 export default Sidebar;

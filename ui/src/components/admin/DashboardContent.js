@@ -11,10 +11,10 @@ const iconMap = {
     studentpayments: faCreditCard,
     students: faUsers,
     errorlogs: faFileAlt,
-    branches: faClipboardList, // You can change this as needed
+    branches: faClipboardList,
     admins: faUsers,
     contactus: faEnvelope,
-    banners: faBullhorn, // Using faBullhorn as a substitute for faBanner
+    banners: faBullhorn,
 };
 
 const DashboardContent = () => {
@@ -23,7 +23,6 @@ const DashboardContent = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch collection counts from the API
         const fetchCollectionCounts = async () => {
             try {
                 const response = await fetch('https://lbc-computer-institute-api.vercel.app/api/collection-counts');
@@ -53,9 +52,9 @@ const DashboardContent = () => {
     return (
         <div style={styles.dashboardContent}>
             <h2>Welcome Administrator</h2>
-            <p>Welcome administrator to admin dashboard where you can do many things. Add charts, tables, or statistics.</p>
+            <p>Welcome administrator to the admin dashboard where you can do many things. Add charts, tables, or statistics.</p>
 
-            <h3>Here are the collection of data : {collectionData.totalCollections}</h3>
+            <h3>Here are the collection of data: {collectionData.totalCollections}</h3>
             <div style={styles.collectionBoxes}>
                 {Object.entries(collectionData.collections).map(([collectionName, count]) => (
                     <div key={collectionName} style={styles.collectionBox}>
@@ -76,6 +75,8 @@ const DashboardContent = () => {
 const styles = {
     dashboardContent: {
         padding: '20px',
+        backgroundColor: '#f9f9f9', // Light background color for the dashboard
+        borderRadius: '8px',
     },
     collectionBoxes: {
         display: 'flex',
@@ -83,8 +84,8 @@ const styles = {
         justifyContent: 'space-between',
     },
     collectionBox: {
-        flex: '1 0 30%', // Adjust the width based on your preference
-        minWidth: '200px', // Minimum width for responsive design
+        flex: '1 0 30%',
+        minWidth: '200px',
         margin: '10px',
         padding: '20px',
         border: '1px solid #ccc',
@@ -92,10 +93,26 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#ffffff', // White background for each box
+        transition: 'transform 0.2s, box-shadow 0.2s', // Smooth hover effect
     },
     iconContainer: {
         marginRight: '10px',
     },
+};
+
+// Add hover effect to collectionBox
+const hoverEffect = {
+    ':hover': {
+        transform: 'scale(1.05)', // Scale effect on hover
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)', // Darker shadow on hover
+    },
+};
+
+// Apply hover effect to collectionBox
+const collectionBoxWithHover = {
+    ...styles.collectionBox,
+    ...hoverEffect,
 };
 
 export default DashboardContent;

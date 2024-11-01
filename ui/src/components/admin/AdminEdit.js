@@ -1,8 +1,8 @@
-// src/components/AdminEdit.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URLS } from '../../constants/apiConstants';
+import { Card } from 'react-bootstrap';
 
 const AdminEdit = () => {
     const { id } = useParams(); // Get the admin ID from the URL
@@ -51,7 +51,6 @@ const AdminEdit = () => {
             await axios.put(`${API_URLS.ADMIN_LIST}/${id}`, formData);
             setSuccessMessage('Admin updated successfully.');
             setTimeout(() => {
-                setSuccessMessage('');
                 navigate('/admin/admin-list'); // Redirect to the admin list page after successful update
             }, 2000);
         } catch (err) {
@@ -62,93 +61,96 @@ const AdminEdit = () => {
 
     return (
         <div className="container">
-            <h2 className="mb-4">Edit Admin</h2>
-            <p className="mb-4 text-muted">
-                Update the information for the administrator below. Ensure that all details are accurate before submitting.
-            </p>
-            <hr />
-            {error && <div className="alert alert-danger">{error}</div>}
-            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-            <form onSubmit={handleSubmit} className="row g-4">
-                <div className="col-md-6">
-                    <label htmlFor="full_name" className="form-label">Full Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="full_name"
-                        name="full_name"
-                        value={formData.full_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="col-md-6">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="col-md-6">
-                    <label htmlFor="phone" className="form-label">Phone</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="col-md-6">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="col-md-6">
-                    <label htmlFor="role" className="form-label">Role</label>
-                    <select
-                        className="form-select"
-                        id="role"
-                        name="role"
-                        value={formData.role}
-                        onChange={handleChange}
-                    >
-                        <option value="read">Read</option>
-                        <option value="read_write">Read & Write</option>
-                    </select>
-                </div>
-                <div className="col-md-6">
-                    <label htmlFor="status" className="form-label">Status</label>
-                    <select
-                        className="form-select"
-                        id="status"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                    >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <div className="col-12 d-flex justify-content-between mt-3">
-                    <button type="submit" className="btn btn-primary btn-sm">Update Admin</button>
-                    <Link to="/admin/admin-list" className="btn btn-secondary btn-sm">Back to Admin List</Link>
-                </div>
-            </form>
+            <Card className="mb-4">
+                <Card.Body>
+                    <h2 className="mb-4">Edit Admin</h2>
+                    <p className="mb-4 text-muted">
+                        Update the information for the administrator below. Ensure that all details are accurate before submitting.
+                    </p>
+                    {error && <div className="alert alert-danger">{error}</div>}
+                    {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                    <form onSubmit={handleSubmit} className="row g-4">
+                        <div className="col-md-6">
+                            <label htmlFor="full_name" className="form-label">Full Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="full_name"
+                                name="full_name"
+                                value={formData.full_name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="email" className="form-label">Email</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="phone" className="form-label">Phone</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="phone"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="password" className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="role" className="form-label">Role</label>
+                            <select
+                                className="form-select"
+                                id="role"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                            >
+                                <option value="read">Read</option>
+                                <option value="read_write">Read & Write</option>
+                            </select>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="status" className="form-label">Status</label>
+                            <select
+                                className="form-select"
+                                id="status"
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                            >
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div className="col-12 d-flex justify-content-between mt-3">
+                            <button type="submit" className="btn btn-primary btn-sm">Update Admin</button>
+                            <Link to="/admin/admin-list" className="btn btn-secondary btn-sm">Back to Admin List</Link>
+                        </div>
+                    </form>
+                </Card.Body>
+            </Card>
         </div>
     );
 };

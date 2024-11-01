@@ -1,18 +1,58 @@
 const express = require('express');
+const multer = require('multer');
+const axios = require('axios');
 const AppInfo = require('../models/AppInfo');
 const router = express.Router();
 
-// Create new AppInfo
-router.post('/', async (req, res) => {
-    try {
-        const { status } = req.body;
+// Initialize multer for image uploads using memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-        // If status is active, set all existing app info entries to inactive
-        if (status === 'active') {
-            await AppInfo.updateMany({}, { status: 'inactive' });
+// Function to upload image to Imgur with retry logic
+const uploadToImgur = async (imageBuffer, retries = 3) => {
+    const url = 'https://api.imgur.com/3/image';
+    const headers = {
+        Authorization: `Client-ID YOUR_IMGUR_CLIENT_ID`, // Replace with your Imgur Client ID
+        'Content-Type': 'application/json',
+    };
+
+    const formData = {
+        image: imageBuffer.toString('base64'), // Convert buffer to base64
+    };
+
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await axios.post(url, formData, { headers });
+            return response.data.data.link; // Return the URL of the uploaded image
+        } catch (error) {
+            if (error.response && error.response.status !== 503) {
+                throw new Error('Error uploading to Imgur: ' + error.message);
+            }
+            console.log(`Retrying... (${i + 1}/${retries})`);
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait before retrying
+        }
+    }
+    throw new Error('Failed to upload image after multiple retries.');
+};
+
+// Create new AppInfo with logo and favicon uploads
+router.post('/', upload.fields([{ name: 'logo' }, { name: 'favicon' }]), async (req, res) => {
+    try {
+        const appInfoData = req.body;
+
+        // Upload logo if provided
+        if (req.files.logo) {
+            const logoUrl = await uploadToImgur(req.files.logo[0].buffer);
+            appInfoData.logo_url = logoUrl; // Save the Imgur URL
         }
 
-        const appInfo = new AppInfo(req.body);
+        // Upload favicon if provided
+        if (req.files.favicon) {
+            const faviconUrl = await uploadToImgur(req.files.favicon[0].buffer);
+            appInfoData.favicon_url = faviconUrl; // Save the Imgur URL
+        }
+
+        const appInfo = new AppInfo(appInfoData);
         await appInfo.save();
         res.status(201).json(appInfo);
     } catch (error) {
@@ -41,17 +81,24 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update AppInfo
-router.put('/:id', async (req, res) => {
+// Update AppInfo with logo and favicon uploads
+router.put('/:id', upload.fields([{ name: 'logo' }, { name: 'favicon' }]), async (req, res) => {
     try {
-        const { status } = req.body;
+        const appInfoData = req.body;
 
-        // If status is active, set all existing app info entries to inactive
-        if (status === 'active') {
-            await AppInfo.updateMany({}, { status: 'inactive' });
+        // Upload logo if a new file was uploaded
+        if (req.files.logo) {
+            const logoUrl = await uploadToImgur(req.files.logo[0].buffer);
+            appInfoData.logo_url = logoUrl; // Update logo URL
         }
 
-        const appInfo = await AppInfo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        // Upload favicon if a new file was uploaded
+        if (req.files.favicon) {
+            const faviconUrl = await uploadToImgur(req.files.favicon[0].buffer);
+            appInfoData.favicon_url = faviconUrl; // Update favicon URL
+        }
+
+        const appInfo = await AppInfo.findByIdAndUpdate(req.params.id, appInfoData, { new: true });
         if (!appInfo) return res.status(404).send('AppInfo not found');
         res.json(appInfo);
     } catch (error) {

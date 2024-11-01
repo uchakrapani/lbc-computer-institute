@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Card } from 'react-bootstrap';
 import { faBook, faUsers, faFileAlt, faExclamationTriangle, faCreditCard, faCogs, faEnvelope, faBullhorn } from '@fortawesome/free-solid-svg-icons';
 import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,6 +16,26 @@ const iconMap = {
     admins: faUsers,
     contactus: faEnvelope,
     banners: faBullhorn,
+};
+
+// Function to generate a random color in hex format
+const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+};
+
+// Function to determine if the color is light or dark
+const getTextColor = (bgColor) => {
+    const r = parseInt(bgColor.slice(1, 3), 16);
+    const g = parseInt(bgColor.slice(3, 5), 16);
+    const b = parseInt(bgColor.slice(5, 7), 16);
+    // Calculate brightness using the luminance formula
+    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+    return brightness > 186 ? 'black' : 'white'; // Return black for light colors and white for dark colors
 };
 
 const DashboardContent = () => {
@@ -56,17 +77,28 @@ const DashboardContent = () => {
 
             <h3>Here are the collection of data: {collectionData.totalCollections}</h3>
             <div style={styles.collectionBoxes}>
-                {Object.entries(collectionData.collections).map(([collectionName, count]) => (
-                    <div key={collectionName} style={styles.collectionBox}>
-                        <div style={styles.iconContainer}>
-                            <FontAwesomeIcon icon={iconMap[collectionName]} size="2x" />
-                        </div>
-                        <div>
-                            <h4>{collectionName}</h4>
-                            <p>Total Records: {count}</p>
-                        </div>
-                    </div>
-                ))}
+                {Object.entries(collectionData.collections).map(([collectionName, count]) => {
+                    const cardColor = getRandomColor(); // Generate a random color for each card
+                    const textColor = getTextColor(cardColor); // Determine text color based on background color
+                    return (
+                        <Card
+                            key={collectionName}
+                            style={{ width: '18rem', backgroundColor: cardColor, color: textColor }} // Set text color
+                            className="mb-2"
+                        >
+                            <Card.Header>
+                                <FontAwesomeIcon icon={iconMap[collectionName]} size="2x" />
+                                {' '} {collectionName}
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Title>{collectionName.charAt(0).toUpperCase() + collectionName.slice(1)} Records</Card.Title>
+                                <Card.Text>
+                                    Total Records: {count}
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    );
+                })}
             </div>
         </div>
     );
@@ -83,36 +115,6 @@ const styles = {
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
-    collectionBox: {
-        flex: '1 0 30%',
-        minWidth: '200px',
-        margin: '10px',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-        backgroundColor: '#ffffff', // White background for each box
-        transition: 'transform 0.2s, box-shadow 0.2s', // Smooth hover effect
-    },
-    iconContainer: {
-        marginRight: '10px',
-    },
-};
-
-// Add hover effect to collectionBox
-const hoverEffect = {
-    ':hover': {
-        transform: 'scale(1.05)', // Scale effect on hover
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)', // Darker shadow on hover
-    },
-};
-
-// Apply hover effect to collectionBox
-const collectionBoxWithHover = {
-    ...styles.collectionBox,
-    ...hoverEffect,
 };
 
 export default DashboardContent;

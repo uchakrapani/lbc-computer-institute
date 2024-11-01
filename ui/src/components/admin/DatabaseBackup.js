@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URLS } from '../../constants/apiConstants';
+import { Card, Button, Alert } from 'react-bootstrap';
 
 const DatabaseBackup = () => {
     const [error, setError] = useState(null);
@@ -33,15 +34,36 @@ const DatabaseBackup = () => {
     };
 
     return (
-        <div className="container">
-            <h2>Download Database Details</h2>
-            <p>Click the button below to download the complete database details as a JSON file.</p>
-            <button className="btn btn-primary" onClick={handleDownload}>
-                Download JSON
-            </button>
-            {error && <div className="alert alert-danger mt-3">{error}</div>}
+        <div className="container mt-5">
+            <Card className="text-center" style={styles.card}>
+                <Card.Header as="h2" style={styles.cardHeader}>Download Database Details</Card.Header>
+                <Card.Body style={styles.cardBody}>
+                    <Card.Text>
+                        Click the button below to download the complete database details as a JSON file.
+                    </Card.Text>
+                    <Button variant="primary" onClick={handleDownload}>
+                        Download JSON
+                    </Button>
+                </Card.Body>
+                {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+            </Card>
         </div>
     );
+};
+
+const styles = {
+    card: {
+        borderRadius: '8px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    },
+    cardHeader: {
+        background: 'linear-gradient(to right, #007bff, #0056b3)', // Blue gradient
+        color: 'white',
+        padding: '20px',
+    },
+    cardBody: {
+        backgroundColor: '#f9f9f9', // Light background for the body
+    },
 };
 
 export default DatabaseBackup;

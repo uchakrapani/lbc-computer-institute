@@ -25,11 +25,11 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS
 app.use(cors());
 
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+
 // Connect to MongoDB
 connectDB();
-
-// Middleware
-app.use(bodyParser.json()); // Parses incoming requests with JSON payloads
 
 // Health Check Route
 app.get("/", (req, res) => {
@@ -40,6 +40,28 @@ app.get("/", (req, res) => {
   });
 });
 
+// Middleware to check DB connection
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState !== 1) { // 1 means connected
+    return res.status(500).json({ message: "Database not connected" });
+  }
+  next();
+});
+
+// API Routes
+app.use("/api/admin", adminRoutes);
+app.use("/api/appInfo", appInfoRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/courseOffers", courseOfferRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/banners", bannerRoutes);
+app.use("/api/complaints", complaintRoutes);
+app.use("/api/contactUs", contactUsRoutes);
+app.use("/api/branches", branchRoutes);
+app.use("/api/studentPayments", studentPaymentRoutes);
+app.use("/api/errorlogs", errorLogRoutes);
+
+// Database Details Route
 app.get("/api/database-details", async (req, res) => {
   try {
     const collections = await mongoose.connection.db.collections(); // Fetch all collections
@@ -54,20 +76,16 @@ app.get("/api/database-details", async (req, res) => {
 
     res.json(dbDetails); // Send complete database details as JSON
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error retrieving database details",
-        error: error.message,
-      });
+    console.error("Error retrieving database details:", error);
+    res.status(500).json({
+      message: "Error retrieving database details",
+      error: error.message,
+    });
   }
 });
 
+// Collection Counts Route
 app.get("/api/collection-counts", async (req, res) => {
-  if (mongoose.connection.readyState !== 1) { // 1 means connected
-    return res.status(500).json({ message: "Database not connected" });
-  }
-
   try {
     const collections = await mongoose.connection.db.collections();
     const dbDetails = {};
@@ -84,26 +102,13 @@ app.get("/api/collection-counts", async (req, res) => {
       collections: dbDetails,
     });
   } catch (error) {
-    console.error("Error retrieving database details:", error);
+    console.error("Error retrieving collection counts:", error);
     res.status(500).json({
-      message: "Error retrieving database details",
+      message: "Error retrieving collection counts",
       error: error.message,
     });
   }
 });
-
-// Routes
-app.use("/api/admin", adminRoutes);
-app.use("/api/appInfo", appInfoRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/courseOffers", courseOfferRoutes);
-app.use("/api/students", studentRoutes);
-app.use("/api/banners", bannerRoutes);
-app.use("/api/complaints", complaintRoutes);
-app.use("/api/contactUs", contactUsRoutes);
-app.use("/api/branches", branchRoutes);
-app.use("/api/studentPayments", studentPaymentRoutes);
-app.use("/api/errorlogs", errorLogRoutes);
 
 // Error logging middleware
 app.use((err, req, res, next) => {
@@ -111,7 +116,7 @@ app.use((err, req, res, next) => {
   errorLog
     .save()
     .then(() => console.log("Error logged"))
-    .catch((logErr) => console.error("Failed to log error:", logErr)); // Handle error when saving the log
+    .catch((logErr) => console.error("Failed to log error:", logErr));
   res.status(500).json({ message: "An error occurred, it has been logged." });
 });
 

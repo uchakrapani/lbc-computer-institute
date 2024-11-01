@@ -4,6 +4,7 @@ const courseSchema = new mongoose.Schema({
     course_name: { type: String, required: true },
     description: { type: String },
     duration: { type: String },
+    banner_url:{type:String},
     level: { type: String },
     price: { type: Number },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },

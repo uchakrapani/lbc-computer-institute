@@ -7,6 +7,7 @@ const APPINFO_BASE_URL = `${BASE_URL}/api/appinfo`;
 const BRANCHES_BASE_URL = `${BASE_URL}/api/branches`;
 const DATABASE_BASE_URL = `${BASE_URL}/api/database-details`;
 const BANNER_BASE_URL = `${BASE_URL}/api/banners`;
+const COURSES_BASE_URL = `${BASE_URL}/api/courses`;
 
 export const API_URLS = {
   APP_INFO_LIST: APPINFO_BASE_URL,
@@ -14,6 +15,7 @@ export const API_URLS = {
   BRANCHES: BRANCHES_BASE_URL,
   DATABASE: DATABASE_BASE_URL,
   BANNERS: BANNER_BASE_URL,
+  COURSES: COURSES_BASE_URL,
   LOGIN: `${ADMIN_BASE_URL}/login`,
   UPDATE_PASSWORD: `${ADMIN_BASE_URL}/:id/password`,
 };

@@ -64,32 +64,33 @@ app.get("/api/database-details", async (req, res) => {
 });
 
 app.get("/api/collection-counts", async (req, res) => {
-  try {
-    const collections = await mongoose.connection.db.collections(); // Fetch all collections
-    const dbDetails = {};
-    const totalCollections = collections.length; // Count of total collections
+  if (mongoose.connection.readyState !== 1) { // 1 means connected
+    return res.status(500).json({ message: "Database not connected" });
+  }
 
-    // Iterate over each collection and get the name and document count
+  try {
+    const collections = await mongoose.connection.db.collections();
+    const dbDetails = {};
+    const totalCollections = collections.length;
+
     for (const collection of collections) {
       const collectionName = collection.collectionName;
-      const documentCount = await collection.countDocuments(); // Get count of documents in the collection
-      dbDetails[collectionName] = documentCount; // Store document count with collection name as key
+      const documentCount = await collection.countDocuments();
+      dbDetails[collectionName] = documentCount;
     }
 
     res.json({
-      totalCollections: totalCollections, // Total number of collections
-      collections: dbDetails, // Document counts for each collection
-    }); // Send response with total collections and details
+      totalCollections: totalCollections,
+      collections: dbDetails,
+    });
   } catch (error) {
-    console.error("Error retrieving database details:", error); // Log the error for debugging
+    console.error("Error retrieving database details:", error);
     res.status(500).json({
       message: "Error retrieving database details",
       error: error.message,
     });
   }
 });
-
-
 
 // Routes
 app.use("/api/admin", adminRoutes);

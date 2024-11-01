@@ -1,7 +1,7 @@
 // src/constants/apiConstants.js
 
-const BASE_URL = "https://lbc-computer-institute-api.vercel.app";
-//const BASE_URL = "http://localhost:9090";
+//const BASE_URL = "https://lbc-computer-institute-api.vercel.app";
+const BASE_URL = "http://localhost:9090";
 const ADMIN_BASE_URL = `${BASE_URL}/api/admin`;
 const APPINFO_BASE_URL = `${BASE_URL}/api/appinfo`;
 const BRANCHES_BASE_URL = `${BASE_URL}/api/branches`;

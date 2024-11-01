@@ -92,6 +92,7 @@ const BranchesList = () => {
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Status</th>
+                            <th>Banner</th> {/* New column for the banner image */}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -107,6 +108,17 @@ const BranchesList = () => {
                                     <span className={`badge ${branch.status === 'active' ? 'bg-success' : 'bg-danger'}`}>
                                         {branch.status}
                                     </span>
+                                </td>
+                                <td>
+                                    {branch.banner_url ? (
+                                        <img
+                                            src={branch.banner_url}
+                                            alt="Branch Banner"
+                                            style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                                        />
+                                    ) : (
+                                        'No Image'
+                                    )}
                                 </td>
                                 <td>
                                     <div className="d-flex justify-content-around">

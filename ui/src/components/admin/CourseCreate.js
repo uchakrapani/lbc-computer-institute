@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { API_URLS } from '../../constants/apiConstants';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
 
 const CourseCreate = () => {
     const [courseData, setCourseData] = useState({
@@ -78,109 +79,109 @@ const CourseCreate = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Create New Course</h2>
-            <p className="text-muted">Fill in the details to create a new course.</p>
-            <hr />
-            {message && <div className="alert alert-success">{message}</div>}
-            {error && <div className="alert alert-danger">{error}</div>}
+        <div className="container">
+            <Card className="shadow">
+                <Card.Body>
+                    <Card.Title>Create New Course</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                        Fill in the details to create a new course.
+                    </Card.Subtitle>
+                    <hr />
+                    {message && <Alert variant="success">{message}</Alert>}
+                    {error && <Alert variant="danger">{error}</Alert>}
 
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">Course Name</label>
-                    <input
-                        type="text"
-                        name="course_name"
-                        className="form-control"
-                        value={courseData.course_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Description</label>
-                    <textarea
-                        name="description"
-                        className="form-control"
-                        value={courseData.description}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Duration</label>
-                    <input
-                        type="text"
-                        name="duration"
-                        className="form-control"
-                        value={courseData.duration}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Banner Image</label>
-                    <input
-                        type="file"
-                        name="image"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={handleFileChange}
-                    />
-                    {imagePreview && (
-                        <div className="mt-3">
-                            <img
-                                src={imagePreview}
-                                alt="Banner Preview"
-                                style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Course Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="course_name"
+                                value={courseData.course_name}
+                                onChange={handleChange}
+                                required
                             />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                name="description"
+                                value={courseData.description}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Duration</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="duration"
+                                value={courseData.duration}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Banner Image</Form.Label>
+                            <Form.Control
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                            {imagePreview && (
+                                <div className="mt-3">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Banner Preview"
+                                        style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                                    />
+                                </div>
+                            )}
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Level</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="level"
+                                value={courseData.level}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Price</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="price"
+                                value={courseData.price}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Status</Form.Label>
+                            <Form.Select
+                                name="status"
+                                value={courseData.status}
+                                onChange={handleChange}
+                            >
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        <div className="d-flex justify-content-between mt-3">
+                            <Button type="submit" variant="primary">Create Course</Button>
+                            <Button variant="secondary" onClick={() => navigate('/admin/courses-list')}>Back to Course List</Button>
                         </div>
-                    )}
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Level</label>
-                    <input
-                        type="text"
-                        name="level"
-                        className="form-control"
-                        value={courseData.level}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Price</label>
-                    <input
-                        type="number"
-                        name="price"
-                        className="form-control"
-                        value={courseData.price}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Status</label>
-                    <select
-                        name="status"
-                        className="form-select"
-                        value={courseData.status}
-                        onChange={handleChange}
-                    >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-
-                <div className="col-12 d-flex justify-content-between mt-3">
-                    <button type="submit" className="btn btn-primary btn-sm">Create Course</button>
-                    <a href="/admin/courses-list" className="btn btn-secondary btn-sm">Back to Course List</a>
-                </div>
-            </form>
+                    </Form>
+                </Card.Body>
+            </Card>
         </div>
     );
 };

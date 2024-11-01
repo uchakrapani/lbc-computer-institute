@@ -2,22 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_URLS } from '../../constants/apiConstants';
+import { Card } from 'react-bootstrap';
 
 const AppInfoEdit = () => {
     const { id } = useParams();
     const [appInfo, setAppInfo] = useState({
         app_name: '',
-        logo_url: '', // Adjusted for the API response
         description: '',
-        favicon_url: '', // Adjusted for the API response
+        logo_url: null,
+        favicon_url: null,
         social_network: [
             { platform: '', url: '' },
         ],
         status: 'active',
         admin_id: '',
     });
-    const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [logoPreview, setLogoPreview] = useState('');
     const [faviconPreview, setFaviconPreview] = useState('');
     const navigate = useNavigate();
@@ -31,7 +32,6 @@ const AppInfoEdit = () => {
                 // Parse the social_network string into an array
                 const socialNetworks = JSON.parse(data.social_network[0]);
 
-                // Set the app info with parsed social networks
                 setAppInfo({
                     ...data,
                     social_network: socialNetworks,
@@ -97,142 +97,146 @@ const AppInfoEdit = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            setMessage('AppInfo updated successfully!');
+            setSuccessMessage('AppInfo updated successfully!');
             setError('');
             setTimeout(() => {
                 navigate('/admin/appinfo');
             }, 2000);
         } catch (error) {
             setError(error.response ? error.response.data.message : 'Error updating AppInfo');
-            setMessage('');
+            setSuccessMessage('');
         }
     };
 
     return (
         <div className="container">
-            <h2>Edit AppInfo</h2>
-            <p className="text-muted">Update the details for the AppInfo record.</p>
-            <hr />
-
-            {message && <div className="alert alert-success">{message}</div>}
-            {error && <div className="alert alert-danger">{error}</div>}
-
-            <form onSubmit={handleSubmit}>
-                <div className="row mb-3">
-                    <div className="col">
-                        <label className="form-label">App Name</label>
-                        <input
-                            type="text"
-                            name="app_name"
-                            className="form-control"
-                            value={appInfo.app_name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Description</label>
-                    <textarea
-                        name="description"
-                        className="form-control"
-                        value={appInfo.description}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                {/* Logo Upload */}
-                <div className="mb-3">
-                    <label className="form-label">Logo</label>
-                    <input
-                        type="file"
-                        name="logo_url"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={handleFileChange}
-                    />
-                    {logoPreview && (
-                        <div className="mt-3">
-                            <img
-                                src={logoPreview}
-                                alt="Logo Preview"
-                                style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+            <Card className="mb-4">
+                <Card.Body>
+                    <h2 className="mb-4">Edit AppInfo</h2>
+                    <p className="mb-4 text-muted">Update the details for the AppInfo record.</p>
+                    {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                    {error && <div className="alert alert-danger">{error}</div>}
+                    <form onSubmit={handleSubmit} className="row g-4">
+                        <div className="col-md-6">
+                            <label htmlFor="app_name" className="form-label">App Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="app_name"
+                                name="app_name"
+                                value={appInfo.app_name}
+                                onChange={handleChange}
+                                required
                             />
                         </div>
-                    )}
-                </div>
-
-                {/* Favicon Upload */}
-                <div className="mb-3">
-                    <label className="form-label">Favicon</label>
-                    <input
-                        type="file"
-                        name="favicon_url"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={handleFileChange}
-                    />
-                    {faviconPreview && (
-                        <div className="mt-3">
-                            <img
-                                src={faviconPreview}
-                                alt="Favicon Preview"
-                                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                        <div className="col-md-6">
+                            <label htmlFor="description" className="form-label">Description</label>
+                            <textarea
+                                className="form-control"
+                                id="description"
+                                name="description"
+                                value={appInfo.description}
+                                onChange={handleChange}
+                                required
                             />
                         </div>
-                    )}
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Status</label>
-                    <select
-                        name="status"
-                        className="form-select"
-                        value={appInfo.status}
-                        onChange={handleChange}
-                    >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-
-                <h5>Social Networks</h5>
-                {appInfo.social_network.map((social, index) => (
-                    <div key={index} className="mb-3">
-                        <div className="row">
-                            <div className="col">
-                                <label className="form-label">Platform</label>
-                                <input
-                                    type="text"
-                                    name={`social_network[${index}].platform`}
-                                    className="form-control"
-                                    value={social.platform}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="col">
-                                <label className="form-label">URL</label>
-                                <input
-                                    type="url"
-                                    name={`social_network[${index}].url`}
-                                    className="form-control"
-                                    value={social.url}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                        <div className="col-md-6">
+                            <label htmlFor="logo_url" className="form-label">Logo</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                id="logo_url"
+                                name="logo_url"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                            {logoPreview && (
+                                <div className="mt-3">
+                                    <img
+                                        src={logoPreview}
+                                        alt="Logo Preview"
+                                        style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                                    />
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))}
-
-                <div className="col-12 d-flex justify-content-between mt-3">
-                    <button type="submit" className="btn btn-primary btn-sm">Update AppInfo</button>
-                    <a href="/admin/appinfo" className="btn btn-secondary btn-sm">Back to AppInfo List</a>
-                </div>
-            </form>
+                        <div className="col-md-6">
+                            <label htmlFor="favicon_url" className="form-label">Favicon</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                id="favicon_url"
+                                name="favicon_url"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                            {faviconPreview && (
+                                <div className="mt-3">
+                                    <img
+                                        src={faviconPreview}
+                                        alt="Favicon Preview"
+                                        style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="status" className="form-label">Status</label>
+                            <select
+                                id="status"
+                                name="status"
+                                className="form-select"
+                                value={appInfo.status}
+                                onChange={handleChange}
+                            >
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <h5 className="mt-4">Social Networks</h5>
+                        <div className="col-12">
+                            <table className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Platform</th>
+                                        <th>URL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {appInfo.social_network.map((social, index) => (
+                                        <tr key={index}>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name={`social_network[${index}].platform`}
+                                                    value={social.platform}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="url"
+                                                    className="form-control"
+                                                    name={`social_network[${index}].url`}
+                                                    value={social.url}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="col-12 d-flex justify-content-between mt-3">
+                            <button type="submit" className="btn btn-primary btn-sm">Update AppInfo</button>
+                            <a href="/admin/appinfo" className="btn btn-secondary btn-sm">Back to AppInfo List</a>
+                        </div>
+                    </form>
+                </Card.Body>
+            </Card>
         </div>
     );
 };

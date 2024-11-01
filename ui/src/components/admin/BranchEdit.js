@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from "../../constants/apiConstants";
+import { Card } from "react-bootstrap";
 
 const BranchEdit = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const BranchEdit = () => {
     phone: "",
     email: "",
     status: "active",
-    banner: null, // For storing the selected file
+    banner: null,
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -73,105 +74,107 @@ const BranchEdit = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Edit Branch</h2>
-      <p className="text-muted">Update the details of this branch.</p>
-      <hr />
+      <Card className="mb-4">
+        <Card.Body>
+          <h2>Edit Branch</h2>
+          <p className="text-muted">Update the details of this branch.</p>
+          {message && <div className="alert alert-success">{message}</div>}
+          {error && <div className="alert alert-danger">{error}</div>}
 
-      {message && <div className="alert alert-success">{message}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="row mb-3">
+              <div className="col">
+                <label className="form-label">Branch Name</label>
+                <input
+                  type="text"
+                  name="branch_name"
+                  className="form-control"
+                  value={branch.branch_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col">
+                <label className="form-label">Contact Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  className="form-control"
+                  value={branch.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <div className="col">
-            <label className="form-label">Branch Name</label>
-            <input
-              type="text"
-              name="branch_name"
-              className="form-control"
-              value={branch.branch_name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col">
-            <label className="form-label">Contact Number</label>
-            <input
-              type="tel"
-              name="phone"
-              className="form-control"
-              value={branch.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Address</label>
-          <textarea
-            name="address"
-            className="form-control"
-            value={branch.address}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="row mb-3">
-          <div className="col">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              value={branch.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col">
-            <label className="form-label">Status</label>
-            <select
-              name="status"
-              className="form-control"
-              value={branch.status}
-              onChange={handleChange}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Banner Image Upload */}
-        <div className="mb-3">
-          <label className="form-label">Banner Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            className="form-control"
-            onChange={handleFileChange}
-          />
-          {preview && (
-            <div className="mt-3">
-              <img
-                src={preview}
-                alt="Banner Preview"
-                style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }} 
+            <div className="mb-3">
+              <label className="form-label">Address</label>
+              <textarea
+                name="address"
+                className="form-control"
+                value={branch.address}
+                onChange={handleChange}
+                required
               />
             </div>
-          )}
-        </div>
 
-        <div className="col-12 d-flex justify-content-between mt-3">
-          <button type="submit" className="btn btn-primary btn-sm">
-            Update Branch
-          </button>
-          <a href="/admin/branches-list" className="btn btn-secondary btn-sm">
-            Back to Branch List
-          </a>
-        </div>
-      </form>
+            <div className="row mb-3">
+              <div className="col">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  value={branch.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col">
+                <label className="form-label">Status</label>
+                <select
+                  name="status"
+                  className="form-select"
+                  value={branch.status}
+                  onChange={handleChange}
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Banner Image Upload */}
+            <div className="mb-3">
+              <label className="form-label">Banner Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="form-control"
+                onChange={handleFileChange}
+              />
+              {preview && (
+                <div className="mt-3">
+                  <img
+                    src={preview}
+                    alt="Banner Preview"
+                    style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="d-flex justify-content-between mt-3">
+              <button type="submit" className="btn btn-primary btn-sm">
+                Update Branch
+              </button>
+              <a href="/admin/branches-list" className="btn btn-secondary btn-sm">
+                Back to Branch List
+              </a>
+            </div>
+          </form>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

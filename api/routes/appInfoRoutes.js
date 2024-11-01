@@ -12,7 +12,7 @@ const upload = multer({ storage });
 const uploadToImgur = async (imageBuffer, retries = 3) => {
     const url = 'https://api.imgur.com/3/image';
     const headers = {
-        Authorization: `Client-ID YOUR_IMGUR_CLIENT_ID`, // Replace with your Imgur Client ID
+        Authorization: `Client-ID 8df89b88143b303`, // Replace with your Imgur Client ID
         'Content-Type': 'application/json',
     };
 

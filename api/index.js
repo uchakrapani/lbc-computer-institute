@@ -81,12 +81,14 @@ app.get("/api/collection-counts", async (req, res) => {
       collections: dbDetails, // Document counts for each collection
     }); // Send response with total collections and details
   } catch (error) {
+    console.error("Error retrieving database details:", error); // Log the error for debugging
     res.status(500).json({
       message: "Error retrieving database details",
       error: error.message,
     });
   }
 });
+
 
 
 // Routes

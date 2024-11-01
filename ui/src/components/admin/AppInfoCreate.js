@@ -64,9 +64,16 @@ const AppInfoCreate = () => {
     e.preventDefault();
     const formData = new FormData();
 
+    // Log the appInfo to ensure app_name is filled
+    console.log('Submitting AppInfo:', appInfo);
+
     // Append all app info data to formData
     for (const key in appInfo) {
-      formData.append(key, appInfo[key]);
+      if (Array.isArray(appInfo[key])) {
+        formData.append(key, JSON.stringify(appInfo[key])); // For social networks
+      } else {
+        formData.append(key, appInfo[key]);
+      }
     }
 
     try {

@@ -11,9 +11,11 @@ const BranchCreate = () => {
         email: '',
         status: 'active',
         admin_id: '', // Admin ID will be set from session storage
+        banner: null, // For storing the selected file
     });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [preview, setPreview] = useState(''); // For image preview
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,10 +30,29 @@ const BranchCreate = () => {
         setBranch({ ...branch, [name]: value });
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setBranch({ ...branch, banner: file });
+            setPreview(URL.createObjectURL(file)); // Create a preview URL
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        
+        // Append all branch data to formData
+        for (const key in branch) {
+            formData.append(key, branch[key]);
+        }
+
         try {
-            const response = await axios.post(`${API_URLS.BRANCHES}`, branch);
+            const response = await axios.post(`${API_URLS.BRANCHES}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             setMessage('Branch created successfully!');
             setError('');
             setTimeout(() => {
@@ -111,6 +132,22 @@ const BranchCreate = () => {
                             readOnly // Make it read-only
                         />
                     </div>
+                </div>
+
+                {/* Banner Image Upload */}
+                <div className="mb-3">
+                    <label className="form-label">Banner Image</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={handleFileChange}
+                    />
+                    {preview && (
+                        <div className="mt-3">
+                            <img src={preview} alt="Banner Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+                        </div>
+                    )}
                 </div>
 
                 <div className="col-12 d-flex justify-content-between mt-3">

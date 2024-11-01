@@ -52,10 +52,10 @@ const DashboardContent = () => {
 
     return (
         <div style={styles.dashboardContent}>
-            <h2>Dashboard Overview</h2>
-            <p>Your main content goes here. Add charts, tables, or statistics.</p>
+            <h2>Welcome Administrator</h2>
+            <p>Welcome administrator to admin dashboard where you can do many things. Add charts, tables, or statistics.</p>
 
-            <h3>Total Collections: {collectionData.totalCollections}</h3>
+            <h3>Here are the collection of data : {collectionData.totalCollections}</h3>
             <div style={styles.collectionBoxes}>
                 {Object.entries(collectionData.collections).map(([collectionName, count]) => (
                     <div key={collectionName} style={styles.collectionBox}>

@@ -17,6 +17,8 @@ import BranchesList from './BranchesList';
 import BranchCreate from './BranchCreate';
 import BranchEdit from './BranchEdit';
 import DatabaseBackup from './DatabaseBackup';
+import BannerCreate from './BannerCreate';
+import BannersList from './BannersList';
 
 const AdminDashboard = () => {
     const location = useLocation();
@@ -46,6 +48,8 @@ const AdminDashboard = () => {
                         <Route path="/branches-create" element={<BranchCreate />} />
                         <Route path="/branches-edit/:id" element={<BranchEdit />} />
                         <Route path="/backup-db" element={<DatabaseBackup />} />
+                        <Route path="/banners-list" element={<BannersList />} />
+                        <Route path="/banners-create" element={<BannerCreate />} />
                     </Routes>
                 </main>
                 <Footer />

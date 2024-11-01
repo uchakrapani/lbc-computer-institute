@@ -117,6 +117,24 @@ const Sidebar = ({ toggleSidebar }) => {
               Branches
             </Link>
           </li>
+          <li>
+            <Link
+              to="/admin/banners-list"
+              style={{
+                textDecoration: "none",
+                color: "#4B5563",
+                display: "flex",
+                alignItems: "center",
+                padding: "8px 16px",
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faBuilding}
+                style={{ marginRight: "8px" }}
+              />
+              Banners
+            </Link>
+          </li>
           <hr />
           <li>
             <Link

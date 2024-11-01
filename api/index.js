@@ -40,14 +40,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Middleware to check DB connection
-app.use((req, res, next) => {
-  if (mongoose.connection.readyState !== 1) { // 1 means connected
-    return res.status(500).json({ message: "Database not connected" });
-  }
-  next();
-});
-
 // API Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/appInfo", appInfoRoutes);

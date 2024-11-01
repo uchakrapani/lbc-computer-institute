@@ -5,12 +5,12 @@ import { API_URLS } from '../../constants/apiConstants';
 
 const BannerCreate = () => {
     const [bannerData, setBannerData] = useState({
-        image: null, // For storing the selected image file
+        image: null,
         title: '',
         description: '',
         banner_url: '',
         status: 'active',
-        admin_id: '', // This will be set from session storage
+        admin_id: '',
     });
     
     const [message, setMessage] = useState('');
@@ -32,15 +32,23 @@ const BannerCreate = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setBannerData((prev) => ({ ...prev, image: file }));
-        setImagePreview(URL.createObjectURL(file)); // Create a preview URL
+        if (file) {
+            setBannerData((prev) => ({ ...prev, image: file }));
+            setImagePreview(URL.createObjectURL(file));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
+        const { title, image } = bannerData;
 
-        // Append all banner data to formData
+        // Validate required fields
+        if (!title || !image) {
+            setError('Title and image are required.');
+            return;
+        }
+
+        const formData = new FormData();
         for (const key in bannerData) {
             formData.append(key, bannerData[key]);
         }
@@ -54,7 +62,7 @@ const BannerCreate = () => {
             setMessage('Banner created successfully!');
             setError('');
             setTimeout(() => {
-                navigate('/admin/banners-create'); // Redirect to banners list
+                navigate('/admin/banners-list'); // Redirect to banners list
             }, 2000);
         } catch (error) {
             setError(error.response ? error.response.data.message : 'Error creating banner');
@@ -140,7 +148,7 @@ const BannerCreate = () => {
 
                 <div className="col-12 d-flex justify-content-between mt-3">
                     <button type="submit" className="btn btn-primary btn-sm">Create Banner</button>
-                    <a href="/admin/banners" className="btn btn-secondary btn-sm">Back to Banner List</a>
+                    <a href="/admin/banners-list" className="btn btn-secondary btn-sm">Back to Banner List</a>
                 </div>
             </form>
         </div>

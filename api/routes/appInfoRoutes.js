@@ -36,19 +36,19 @@ const uploadToImgur = async (imageBuffer, retries = 3) => {
 };
 
 // Create new AppInfo with logo and favicon uploads
-router.post('/', upload.fields([{ name: 'logo' }, { name: 'favicon' }]), async (req, res) => {
+router.post('/', upload.fields([{ name: 'logo_url' }, { name: 'favicon_url' }]), async (req, res) => {
     try {
         const appInfoData = req.body;
 
         // Upload logo if provided
-        if (req.files.logo) {
-            const logoUrl = await uploadToImgur(req.files.logo[0].buffer);
+        if (req.files.logo_url) {
+            const logoUrl = await uploadToImgur(req.files.logo_url[0].buffer);
             appInfoData.logo_url = logoUrl; // Save the Imgur URL
         }
 
         // Upload favicon if provided
-        if (req.files.favicon) {
-            const faviconUrl = await uploadToImgur(req.files.favicon[0].buffer);
+        if (req.files.favicon_url) {
+            const faviconUrl = await uploadToImgur(req.files.favicon_url[0].buffer);
             appInfoData.favicon_url = faviconUrl; // Save the Imgur URL
         }
 
@@ -59,6 +59,7 @@ router.post('/', upload.fields([{ name: 'logo' }, { name: 'favicon' }]), async (
         res.status(400).json({ message: error.message });
     }
 });
+
 
 // Get all AppInfo
 router.get('/', async (req, res) => {

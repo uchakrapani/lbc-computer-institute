@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const NewsTicker = () => {
     const [courseOffers, setCourseOffers] = useState([]);
+    const [isHovered, setIsHovered] = useState(false); // State to track hover status
 
     useEffect(() => {
         const fetchCourseOffers = async () => {
@@ -39,7 +40,7 @@ const NewsTicker = () => {
 
     const marqueeStyle = {
         display: 'flex',
-        animation: 'ticker 30s linear infinite', // Slower speed
+        animation: isHovered ? 'none' : 'ticker 30s linear infinite', // Pause on hover
         whiteSpace: 'nowrap',
         paddingLeft: '160px', // Space for the title
     };
@@ -61,8 +62,12 @@ const NewsTicker = () => {
     };
 
     return (
-        <div style={tickerStyle}>
-            <div style={titleStyle}>Latest Offers</div>
+        <div
+            style={tickerStyle}
+            onMouseEnter={() => setIsHovered(true)} // Set hover state to true on mouse enter
+            onMouseLeave={() => setIsHovered(false)} // Set hover state to false on mouse leave
+        >
+            <div style={titleStyle}>Hurry Up Latest Offers</div>
             <style>
                 {`
                     @keyframes ticker {
@@ -75,7 +80,7 @@ const NewsTicker = () => {
                 {courseOffers.map((offer) => (
                     <div key={offer._id} style={newsItemStyle}>
                         <span style={newsTitleStyle}>
-                            {`${offer.course_id} - Discount: ${offer.discount_percentage}%`}
+                            {`${offer.title} - Discount: ${offer.discount_percentage}%`}
                         </span>
                         <span style={newsDateStyle}>
                             {`(Valid from ${new Date(offer.offer_start_date).toLocaleDateString()} to ${new Date(offer.offer_end_date).toLocaleDateString()})`}

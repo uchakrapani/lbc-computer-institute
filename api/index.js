@@ -23,7 +23,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow only this origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed methods
+  credentials: true, // Allow credentials (e.g., cookies)
+};
+
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());

@@ -1,23 +1,26 @@
 // src/components/LandingPage.js
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Header from "./Header";
+import CarouselLBC from "./CarouselLBC";
 
 const LandingPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleLoginClick = () => {
-        navigate('/login'); // Use navigate instead of history.push
-    };
+  const handleLoginClick = () => {
+    navigate("/login"); // Use navigate instead of history.push
+  };
 
-    return (
-        <div className="container text-center mt-5">
-            <h1>Welcome to the Admin Portal</h1>
-            <button className="btn btn-primary mt-3" onClick={handleLoginClick}>
-                Login
-            </button>
-        </div>
-    );
+  return (
+    <>
+      <Header />
+      <CarouselLBC/>
+      <button className="btn btn-primary mt-3" onClick={handleLoginClick}>
+        Login
+      </button>
+    </>
+  );
 };
 
 export default LandingPage;

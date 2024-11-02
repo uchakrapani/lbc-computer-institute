@@ -139,17 +139,6 @@ const BannerEdit = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Banner URL</label>
-                            <input
-                                type="url"
-                                name="banner_url"
-                                className="form-control"
-                                value={bannerData.banner_url}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="mb-3">
                             <label className="form-label">Status</label>
                             <select
                                 name="status"

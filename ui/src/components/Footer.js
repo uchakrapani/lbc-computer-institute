@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { API_URLS } from '../constants/apiConstants';
 
 const Footer = () => {
   const [appInfo, setAppInfo] = useState(null);
@@ -17,7 +18,7 @@ const Footer = () => {
     const fetchAppInfo = async () => {
       try {
         const response = await fetch(
-          "https://lbc-computer-institute-api.vercel.app/api/appinfo"
+         `${API_URLS.APP_INFO_LIST}/active`
         );
         const data = await response.json();
         // Assuming the API returns an array and we want the first item

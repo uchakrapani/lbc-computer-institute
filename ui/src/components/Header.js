@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { API_URLS } from '../constants/apiConstants';
 
 function Header() {
     const [appInfo, setAppInfo] = useState(null);
@@ -11,7 +12,7 @@ function Header() {
         const fetchAppInfo = async () => {
             try {
                 const response = await fetch(
-                    "https://lbc-computer-institute-api.vercel.app/api/appinfo"
+                    `${API_URLS.APP_INFO_LIST}/active`
                 );
                 const data = await response.json();
                 if (data.length > 0) {

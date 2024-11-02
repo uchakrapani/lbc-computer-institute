@@ -13,10 +13,10 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all Course Offers
+// Get all Course Offers with populated Course data
 router.get('/', async (req, res) => {
     try {
-        const courseOffers = await CourseOffer.find();
+        const courseOffers = await CourseOffer.find().populate('course_id');
         res.json(courseOffers);
     } catch (error) {
         res.status(500).json({ message: error.message });

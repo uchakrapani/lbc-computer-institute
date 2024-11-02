@@ -8,6 +8,7 @@ import Home from "./Home";
 import Login from "./Login";
 import About from "./About";
 import WhyChooseUs from "./WhyChooseUs";
+import NewsTicker from "./NewsTicker";
 
 const LandingPage = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ const LandingPage = () => {
   return (
     <>
       <Header />
+      <NewsTicker/>
       <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />

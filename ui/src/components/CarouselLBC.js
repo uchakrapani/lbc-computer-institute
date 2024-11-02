@@ -25,8 +25,12 @@ function CarouselLBC() {
 
   const carouselItemStyle = {
     position: 'relative',
-    height: '600px', 
+    height: '600px',
     overflow: 'hidden',
+    border: '2px solid lightgray', // Light gray border
+    borderRadius: '10px', // Rounded corners
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Soft shadow
+    margin: '0 auto', // Centering the carousel
   };
 
   const captionStyle = {
@@ -35,12 +39,13 @@ function CarouselLBC() {
     left: '50%',
     transform: 'translateX(-50%)', 
     color: '#fff',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: '10px',
-    borderRadius: '5px',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker overlay for better contrast
+    padding: '15px',
+    borderRadius: '8px',
     textAlign: 'center',
     width: '80%', // Wider width
-    maxWidth: '600px', // Optional: limit the maximum width
+    maxWidth: '600px', // Limit the maximum width
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Shadow for caption
   };
 
   return (
@@ -51,7 +56,7 @@ function CarouselLBC() {
             className="d-block w-100"
             src={banner.image}
             alt={banner.title}
-            style={{ height: '600px', objectFit: 'cover' }} 
+            style={{ height: '600px', objectFit: 'cover', borderRadius: '10px' }} // Rounded corners for image
           />
           <Carousel.Caption style={captionStyle}>
             <h3>{banner.title}</h3>

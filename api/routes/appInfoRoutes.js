@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const axios = require('axios');
-const AppInfo = require('../models/AppInfo');
+const AppInfo = require('../models/AppInfo'); // Make sure this path is correct
 const router = express.Router();
 
 // Initialize multer for image uploads using memory storage
@@ -60,8 +60,17 @@ router.post('/', upload.fields([{ name: 'logo_url' }, { name: 'favicon_url' }]),
     }
 });
 
+// Get all active AppInfo records
+router.get('/active', async (req, res) => {
+    try {
+        const activeAppInfoList = await AppInfo.find({ status: 'active' }); // Filter by active status
+        res.json(activeAppInfoList);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
-// Get all AppInfo
+// Get all AppInfo records
 router.get('/', async (req, res) => {
     try {
         const appInfoList = await AppInfo.find();

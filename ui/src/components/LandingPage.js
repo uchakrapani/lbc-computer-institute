@@ -1,24 +1,27 @@
 // src/components/LandingPage.js
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./Header";
-import CarouselLBC from "./CarouselLBC";
+import Footer from "./Footer";
+import Home from "./Home";
+import Login from "./Login";
+import About from "./About";
+import WhyChooseUs from "./WhyChooseUs";
 
 const LandingPage = () => {
-  const navigate = useNavigate();
-
-  const handleLoginClick = () => {
-    navigate("/login"); // Use navigate instead of history.push
-  };
+  const location = useLocation();
 
   return (
     <>
       <Header />
-      <CarouselLBC/>
-      <button className="btn btn-primary mt-3" onClick={handleLoginClick}>
-        Login
-      </button>
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/aboutus" element={<About />} />
+      </Routes>
+      <Footer />
     </>
   );
 };

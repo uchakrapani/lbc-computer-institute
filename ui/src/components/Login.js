@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { API_URLS } from '../constants/apiConstants'; // Import API constants
 
 const Login = () => {
     const [loginId, setLoginId] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(''); // State for error messages
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(''); // Reset error message before each login attempt
+        setError('');
 
         try {
             const response = await axios.post(API_URLS.LOGIN, {
@@ -20,49 +19,62 @@ const Login = () => {
                 password,
             });
 
-            // Store user data in session storage
-            sessionStorage.setItem('user', JSON.stringify(response.data.admin)); // Save only the admin data
-
-            // Redirect to admin dashboard
-            navigate('/admin/dashboard'); // Adjust path as needed
+            sessionStorage.setItem('user', JSON.stringify(response.data.admin));
+            navigate('/admin/dashboard');
         } catch (error) {
             console.error('Login failed:', error);
-            setError('Login failed! Please check your credentials.'); // Set error message
+            setError('Login failed! Please check your credentials.');
         }
     };
 
     return (
-        <div className="container mt-5">
-            <h2 className="mb-4 text-center">Login to Your Account</h2>
-            <p className="text-muted mb-4 text-center">
-                Please enter your credentials to access the admin dashboard.
-            </p>
-            {error && <div className="alert alert-danger text-center">{error}</div>} {/* Display error message */}
-            <form onSubmit={handleLogin} className="w-50 mx-auto">
-                <div className="mb-3">
-                    <label className="form-label">Login ID</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={loginId}
-                        onChange={(e) => setLoginId(e.target.value)}
-                        required
-                    />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: '50px' }}>
+            <div style={{ flex: 1, padding: '20px' }}>
+                <img 
+                    src="/login.jpg" // Correctly referencing the image in the public folder
+                    alt="Login Illustration"
+                    style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '8px' }}
+                />
+            </div>
+            <div style={{ flex: 1, padding: '20px' }}>
+                <h2>Login to Your Account</h2>
+                <p style={{ color: '#666' }}>
+                    Please enter your credentials to access the admin dashboard.
+                </p>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <div className="card" style={{ padding: '20px' }}>
+                    <form onSubmit={handleLogin}>
+                        <div className="mb-3">
+                            <label className="form-label">Login ID</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={loginId}
+                                onChange={(e) => setLoginId(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-sm w-100">
+                            Login
+                        </button>
+                        <div className="mt-2 text-center">
+                            <a href="/forgot-password" style={{ textDecoration: 'none', color: '#007bff' }}>
+                                Forgot Password?
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                    Login
-                </button>
-            </form>
+            </div>
         </div>
     );
 };

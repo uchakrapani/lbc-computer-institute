@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
 function Header() {
+    const [appInfo, setAppInfo] = useState(null);
+
+    useEffect(() => {
+        const fetchAppInfo = async () => {
+            try {
+                const response = await fetch(
+                    "https://lbc-computer-institute-api.vercel.app/api/appinfo"
+                );
+                const data = await response.json();
+                if (data.length > 0) {
+                    setAppInfo(data[0]);
+                }
+            } catch (error) {
+                console.error("Error fetching app info:", error);
+            }
+        };
+
+        fetchAppInfo();
+    }, []);
+
     const navbarStyle = {
         backgroundColor: '#343a40', // Dark background for a professional look
         height: '60px',
@@ -48,8 +68,14 @@ function Header() {
         <Navbar style={navbarStyle} expand="lg">
             <Container>
                 <div style={logoStyle}>
-                    <FontAwesomeIcon icon={faBookOpen} size="2x" color="#007bff" />
-                    <h2 style={titleStyle}>LastBenchCoder</h2>
+                    {appInfo && appInfo.logo_url && (
+                        <img
+                            src={appInfo.logo_url}
+                            alt={appInfo.app_name}
+                            style={{ width: '40px', height: '40px', marginRight: '10px' }} // Logo size
+                        />
+                    )}
+                    <h2 style={titleStyle}>{appInfo ? appInfo.app_name : 'Loading...'}</h2>
                 </div>
                 <Navbar.Toggle aria-controls="navbar-nav" />
                 <Navbar.Collapse id="navbar-nav" className="justify-content-end">
@@ -57,7 +83,7 @@ function Header() {
                         {['Home', 'About Us', 'Services', 'Blog', 'Contact Us'].map((item, index) => (
                             <li key={index} style={menuItemStyle}>
                                 <Link 
-                                    to={`/${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                                    to={`/home/${item.toLowerCase().replace(/\s+/g, '-')}`} 
                                     style={linkStyle}
                                     onMouseOver={(e) => e.currentTarget.style.color = hoverLinkStyle.color}
                                     onMouseOut={(e) => e.currentTarget.style.color = linkStyle.color}

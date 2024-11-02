@@ -2,7 +2,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
-import Login from './components/Login';
 import AdminDashboard from './components/admin/AdminDashboard';
 import "bootstrap/dist/css/bootstrap.min.css";
 import ProtectedRoute from './components/ProtectedRoute';
@@ -12,16 +11,16 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/home/*" element={<LandingPage />} /> {/* Handle nested routes */}
                 <Route
-                    path="/admin/*" // Allow nested routes
+                    path="/admin/*"
                     element={
                         <ProtectedRoute>
                             <AdminDashboard />
                         </ProtectedRoute>
                     }
                 />
+                <Route path="/" element={<LandingPage />} /> {/* Redirect to LandingPage */}
             </Routes>
         </Router>
     );

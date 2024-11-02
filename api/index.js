@@ -22,17 +22,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://lbc-computer-institute.vercel.app",
-];
-
-// Enable CORS with specific origins
-app.use(cors({
-  origin: allowedOrigins,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify methods to allow
-  credentials: true // Allow credentials if needed
-}));
+// Enable CORS
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
